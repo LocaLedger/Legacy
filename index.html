@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>LocaLegacy — Investment Tracker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { font-family: 'Space Mono', 'Courier New', monospace; }
+  :root { --brand: #10B981; --brand-dim: rgba(16,185,129,0.15); --brand-border: rgba(16,185,129,0.3); --brand-text: #6EE7B7; }
+  body { background: #0f172a; color: #f1f5f9; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .pulse { animation: pulse 2.6s ease-in-out infinite; }
+  .feature-item::before { content: "→"; color: var(--brand-text); margin-right: 10px; flex-shrink: 0; }
+  .feature-item { display: flex; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; color: #cbd5e1; }
+  .feature-item:last-child { border-bottom: none; }
+</style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-start px-5 pt-16 pb-12">
+
+  <div class="w-full max-w-sm">
+
+    <a href="https://loca.n8.wtf" class="inline-flex items-center gap-2 text-xs text-slate-500 hover:text-slate-300 transition-colors mb-10" style="text-decoration:none">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      LocaLedger Suite
+    </a>
+
+    <div class="flex items-center gap-4 mb-4">
+      <div class="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style="background:var(--brand-dim);border:1px solid var(--brand-border)">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="1.8">
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+          <polyline points="17 6 23 6 23 12"/>
+        </svg>
+      </div>
+      <div>
+        <div class="text-2xl font-bold" style="color:var(--brand-text)">LocaLegacy</div>
+        <div class="text-xs text-slate-400 mt-0.5">Investment Tracker</div>
+      </div>
+    </div>
+
+    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-6 pulse" style="background:var(--brand-dim);color:var(--brand-text);border:1px solid var(--brand-border)">
+      <span>●</span> In Development
+    </div>
+
+    <p class="text-sm text-slate-300 leading-relaxed mb-8">
+      Track every asset you own — from index funds to rare sneakers. Stocks, crypto, real estate, vehicles, collectibles. Your full portfolio, offline.
+    </p>
+
+    <div class="h-px mb-6" style="background:rgba(255,255,255,0.07)"></div>
+
+    <div class="text-xxs font-bold tracking-widest uppercase text-slate-500 mb-3" style="font-size:10px">Planned Features</div>
+    <div class="mb-8">
+      <div class="feature-item">Stocks, ETFs, crypto, and alternative asset tracking</div>
+      <div class="feature-item">Unrealized gain/loss with cost basis and CAGR</div>
+      <div class="feature-item">Asset class diversification view</div>
+      <div class="feature-item">Short vs. long-term tax lot tracking</div>
+      <div class="feature-item">Manual price updates with historical logging</div>
+      <div class="feature-item">Optional free API price refresh for public tickers</div>
+      <div class="feature-item">Watchlist with target buy price tracking</div>
+    </div>
+
+    <div class="p-3 rounded-xl text-xs text-slate-400 mb-8" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07)">
+      <span class="font-bold" style="color:var(--brand-text)">Offline-first.</span> Your financial data never leaves your device. No accounts required for the free tier.
+    </div>
+
+    <div class="text-center text-xs text-slate-600">
+      Part of the
+      <a href="https://loca.n8.wtf" style="color:var(--brand-text);text-decoration:none">LocaLedger Suite</a>
+      &nbsp;·&nbsp; AGPL-3.0
+    </div>
+
+  </div>
+</body>
+</html>
