@@ -17,7 +17,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 .suite-drum-wrap{height:44px;overflow:hidden;display:inline-block;vertical-align:middle;position:relative;-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 22%,#000 78%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0%,#000 22%,#000 78%,transparent 100%);}
-.suite-drum{position:relative;transition:transform 0.52s cubic-bezier(0.4,0,0.2,1);will-change:transform;}
+.suite-drum{position:relative;transition:transform 0.6s cubic-bezier(0.22,1,0.36,1);will-change:transform;transform-origin:center;}
+#suiteLaunchBtn { transition: transform 0.12s ease; }
+#suiteLaunchBtn:active { transform: scale(0.97); }
 .suite-face{display:block;height:44px;line-height:44px;white-space:nowrap;font-family:'Space Mono','Courier New',monospace;font-size:28px;font-weight:700;color:#10B981;}
 #suiteLauncher{background:rgba(15,17,26,0.97);border-bottom:1px solid rgba(16,185,129,0.18);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 8px 32px rgba(0,0,0,0.5);}
 .suite-module-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid transparent;background:rgba(255,255,255,0.03);cursor:pointer;transition:background 0.15s,border-color 0.15s,transform 0.1s;text-align:left;width:100%;}
@@ -43,39 +45,117 @@
 <div id="toast"></div>
 
 <!-- Header -->
-<header class="sticky top-0 z-40 flex items-center justify-between px-4 py-2"
-  style="background:rgba(15,23,42,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.06);padding-top:max(0.5rem,env(safe-area-inset-top))">
-  <div class="flex items-center gap-2 cursor-pointer" onclick="toggleSuiteLauncher()">
-    <div class="suite-drum-wrap" style="width:48px">
+<header class="px-4 py-4 border-b border-gray-800 sticky top-0 bg-gray-900/80 backdrop-blur-sm z-20 pt-4 flex justify-between items-center relative">
+
+  <button id="suiteLaunchBtn" onclick="toggleSuiteLauncher()" class="flex items-center gap-0 cursor-pointer select-none" style="background:none;border:none;padding:0" aria-label="Open LocaLedger Suite">
+    <svg width="40" height="44" viewBox="0 0 20 22" fill="none" style="flex-shrink:0;margin-right:8px">
+      <defs>
+        <filter id="hgG2" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="hgY2" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="hgI2" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <line x1="4" y1="7.5" x2="4" y2="10"  stroke="#334155" stroke-width="1.5"/>
+      <line x1="4" y1="12"  x2="4" y2="14.5" stroke="#334155" stroke-width="1.5"/>
+      <circle cx="4" cy="4"  r="2.5" fill="#22C55E" filter="url(#hgG2)"/>
+      <rect x="8.5" y="2.75" width="9"  height="2.5" rx="1.25" fill="#334155"/>
+      <circle cx="4" cy="11" r="2.5" fill="#EAB308" filter="url(#hgY2)"/>
+      <rect x="8.5" y="9.75" width="12" height="2.5" rx="1.25" fill="#334155"/>
+      <circle cx="4" cy="18" r="2.5" fill="#6366F1" filter="url(#hgI2)"/>
+      <rect x="8.5" y="16.75" width="7" height="2.5" rx="1.25" fill="#334155"/>
+    </svg>
+    <span style="font-family:'Space Mono','Courier New',monospace;font-size:28px;font-weight:700;color:#F8FAFC;line-height:1">Loca</span>
+    <div class="suite-drum-wrap">
       <div id="suiteDrum" class="suite-drum">
-        <span class="suite-face">💰</span><span class="suite-face">📉</span><span class="suite-face">📊</span>
-        <span class="suite-face">💸</span><span class="suite-face">📈</span><span class="suite-face">💧</span>
-        <span class="suite-face">💰</span>
+        <span class="suite-face">Labor</span>
+        <span class="suite-face">Loss</span>
+        <span class="suite-face">Limit</span>
+        <span class="suite-face">Loan</span>
+        <span class="suite-face">Legacy</span>
+        <span class="suite-face">Liquid</span>
+        <span class="suite-face">Labor</span>
       </div>
     </div>
-    <div>
-      <div style="font-size:15px;font-weight:700;color:#10B981;font-family:'Space Mono',monospace;line-height:1.1">LocaLegacy</div>
-      <div style="font-size:9px;color:#64748b;font-family:'Space Mono',monospace">INVESTMENT TRACKER</div>
+    <svg id="suiteChevron" width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-left:2px;transition:transform 0.32s cubic-bezier(0.34,1.56,0.64,1);flex-shrink:0">
+      <path d="M2.5 4.5L6 8l3.5-3.5" stroke="#10B981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <!-- Suite Launcher Panel (slides down from header) -->
+  <div id="suiteLauncher" class="hidden absolute top-full left-0 right-0 z-50" style="border-top:1px solid rgba(16,185,129,0.18)">
+    <div class="px-1 pt-3 pb-4 max-w-lg mx-auto">
+      <div class="flex items-center justify-between mb-3">
+        <span style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:#475569;letter-spacing:0.1em;text-transform:uppercase">LocaLedger Suite</span>
+        <button onclick="toggleSuiteLauncher()" style="color:#475569;font-size:18px;line-height:1;background:none;border:none;cursor:pointer;padding:2px 6px">×</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <button id="suiteBtn-labor" class="suite-module-btn" onclick="switchSuiteModule('labor')">
+        <div class="suite-module-icon" style="background:rgba(99,102,241,0.18);border:1px solid rgba(99,102,241,0.35)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:700;color:#f1f5f9;font-family:'Space Mono',monospace">LocaLabor</div>
+          <div style="font-size:10px;color:#818cf8;margin-top:1px">Income Tracking</div>
+        </div>
+        <span style="font-size:9px;font-weight:700;background:#6366F1;color:#fff;padding:2px 6px;border-radius:999px;letter-spacing:0.06em;flex-shrink:0">⮕</span>
+      </button>
+      <button id="suiteBtn-loss" class="suite-module-btn" onclick="switchSuiteModule('loss')">
+        <div class="suite-module-icon" style="background:rgba(244,63,94,0.18);border:1px solid rgba(244,63,94,0.35)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#F43F5E" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:700;color:#f1f5f9;font-family:'Space Mono',monospace">LocaLoss</div>
+          <div style="font-size:10px;color:#fb7185;margin-top:1px">Spending Tracker</div>
+        </div>
+        <span style="font-size:9px;font-weight:700;background:#F43F5E;color:#fff;padding:2px 6px;border-radius:999px;letter-spacing:0.06em;flex-shrink:0">⮕</span>
+      </button>
+      <button id="suiteBtn-limit" class="suite-module-btn" onclick="switchSuiteModule('limit')">
+        <div class="suite-module-icon" style="background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.25)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:700;color:#f1f5f9;font-family:'Space Mono',monospace">LocaLimit</div>
+          <div style="font-size:10px;color:#fbbf24;margin-top:1px">Budget Intel</div>
+        </div>
+        <span style="font-size:9px;font-weight:700;background:rgba(245,158,11,0.2);color:#fcd34d;padding:2px 6px;border-radius:999px;letter-spacing:0.06em;flex-shrink:0">SUITE</span>
+      </button>
+      <button id="suiteBtn-loan" class="suite-module-btn" onclick="switchSuiteModule('loan')">
+        <div class="suite-module-icon" style="background:rgba(249,115,22,0.12);border:1px solid rgba(249,115,22,0.25)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:700;color:#f1f5f9;font-family:'Space Mono',monospace">LocaLoan</div>
+          <div style="font-size:10px;color:#fb923c;margin-top:1px">Loan Optimizer</div>
+        </div>
+        <span style="font-size:9px;font-weight:700;background:rgba(249,115,22,0.2);color:#fdba74;padding:2px 6px;border-radius:999px;letter-spacing:0.06em;flex-shrink:0">SUITE</span>
+      </button>
+      <button id="suiteBtn-legacy" class="suite-module-btn active" onclick="switchSuiteModule('legacy')">
+        <div class="suite-module-icon" style="background:rgba(16,185,129,0.18);border:1px solid rgba(16,185,129,0.35)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:700;color:#10B981;font-family:'Space Mono',monospace">LocaLegacy</div>
+          <div style="font-size:10px;color:#34d399;margin-top:1px">Investment Tracker</div>
+        </div>
+        <span style="font-size:9px;font-weight:700;background:#10B981;color:#000;padding:2px 6px;border-radius:999px;letter-spacing:0.06em;flex-shrink:0">SUITE</span>
+      </button>
+      <button id="suiteBtn-liquid" class="suite-module-btn" onclick="switchSuiteModule('liquid')">
+        <div class="suite-module-icon" style="background:rgba(6,182,212,0.12);border:1px solid rgba(6,182,212,0.25)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#06B6D4" stroke-width="2"><path d="M12 2c0 0-8 6.5-8 12a8 8 0 0016 0c0-5.5-8-12-8-12z"/></svg>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:700;color:#f1f5f9;font-family:'Space Mono',monospace">LocaLiquid</div>
+          <div style="font-size:10px;color:#22d3ee;margin-top:1px">Net Worth Engine</div>
+        </div>
+        <span style="font-size:9px;font-weight:700;background:rgba(6,182,212,0.2);color:#67e8f9;padding:2px 6px;border-radius:999px;letter-spacing:0.06em;flex-shrink:0">SUITE</span>
+      </button>
     </div>
   </div>
+  </div><!-- /suiteLauncher -->
+
   <button data-tab="settings" class="tab p-2 text-gray-400" aria-label="Settings">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
   </button>
 </header>
-
-<!-- Suite Launcher -->
-<div id="suiteLauncher" class="hidden sticky z-30" style="top:56px">
-  <div class="px-4 py-3 max-w-lg mx-auto">
-    <div class="grid grid-cols-3 gap-2">
-      <button class="suite-module-btn" onclick="switchSuiteModule('labor')"><span class="suite-module-icon" style="background:rgba(99,102,241,0.15)"><span style="font-size:18px">💰</span></span><div><div style="font-size:11px;font-weight:700;color:#f1f5f9;font-family:'Space Mono',monospace">Labor</div><div style="font-size:9px;color:#64748b;font-family:'Space Mono',monospace">INCOME</div></div></button>
-      <button class="suite-module-btn" onclick="switchSuiteModule('loss')"><span class="suite-module-icon" style="background:rgba(244,63,94,0.15)"><span style="font-size:18px">📉</span></span><div><div style="font-size:11px;font-weight:700;color:#f1f5f9;font-family:'Space Mono',monospace">Loss</div><div style="font-size:9px;color:#64748b;font-family:'Space Mono',monospace">SPENDING</div></div></button>
-      <button class="suite-module-btn" onclick="switchSuiteModule('limit')"><span class="suite-module-icon" style="background:rgba(245,158,11,0.15)"><span style="font-size:18px">📊</span></span><div><div style="font-size:11px;font-weight:700;color:#f1f5f9;font-family:'Space Mono',monospace">Limit</div><div style="font-size:9px;color:#64748b;font-family:'Space Mono',monospace">BUDGET</div></div></button>
-      <button class="suite-module-btn" onclick="switchSuiteModule('loan')"><span class="suite-module-icon" style="background:rgba(249,115,22,0.15)"><span style="font-size:18px">💸</span></span><div><div style="font-size:11px;font-weight:700;color:#f1f5f9;font-family:'Space Mono',monospace">Loan</div><div style="font-size:9px;color:#64748b;font-family:'Space Mono',monospace">DEBT</div></div></button>
-      <button class="suite-module-btn active" onclick="switchSuiteModule('legacy')"><span class="suite-module-icon" style="background:rgba(16,185,129,0.15)"><span style="font-size:18px">📈</span></span><div><div style="font-size:11px;font-weight:700;color:#10B981;font-family:'Space Mono',monospace">Legacy</div><div style="font-size:9px;color:#64748b;font-family:'Space Mono',monospace">ASSETS</div></div></button>
-      <button class="suite-module-btn" onclick="switchSuiteModule('liquid')"><span class="suite-module-icon" style="background:rgba(6,182,212,0.15)"><span style="font-size:18px">💧</span></span><div><div style="font-size:11px;font-weight:700;color:#f1f5f9;font-family:'Space Mono',monospace">Liquid</div><div style="font-size:9px;color:#64748b;font-family:'Space Mono',monospace">NET WORTH</div></div></button>
-    </div>
-  </div>
-</div>
 
 <main class="flex-1 overflow-y-auto" style="padding-bottom:calc(5.5rem + env(safe-area-inset-bottom,0px))">
   <div id="app" class="max-w-lg mx-auto px-4 pt-4"></div>
@@ -84,9 +164,24 @@
 <!-- Bottom nav -->
 <nav class="fixed bottom-0 left-0 right-0 z-40 flex"
   style="background:rgba(15,23,42,0.97);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,0.06);padding-bottom:env(safe-area-inset-bottom,0px)">
-  <button data-tab="dashboard" class="tab flex-1 py-3 text-center text-gray-400"><div style="font-size:18px">📈</div><div style="font-size:9px;margin-top:1px">Portfolio</div></button>
-  <button data-tab="add"       class="tab flex-1 py-3 text-center text-gray-400"><div style="font-size:18px">➕</div><div style="font-size:9px;margin-top:1px">Add Asset</div></button>
-  <button data-tab="assets"    class="tab flex-1 py-3 text-center text-gray-400"><div style="font-size:18px">📋</div><div style="font-size:9px;margin-top:1px">Assets</div></button>
+  <button data-tab="dashboard" class="tab flex-1 py-3 text-center text-gray-400">
+    <div class="flex flex-col items-center gap-1">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+      <span>Portfolio</span>
+    </div>
+  </button>
+  <button data-tab="add" class="tab flex-1 py-3 text-center text-gray-400">
+    <div class="flex flex-col items-center gap-1">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
+      <span>Add Asset</span>
+    </div>
+  </button>
+  <button data-tab="assets" class="tab flex-1 py-3 text-center text-gray-400">
+    <div class="flex flex-col items-center gap-1">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      <span>Assets</span>
+    </div>
+  </button>
 </nav>
 
 <script>
@@ -99,15 +194,15 @@ const APP_VERSION = '1.0.0';
 const EMERALD     = '#10B981';
 
 const ASSET_CLASSES = [
-  { key:'stock',    label:'Stock',       icon:'📈', color:'#10B981', liquid:true  },
-  { key:'etf',      label:'ETF',         icon:'📊', color:'#06B6D4', liquid:true  },
-  { key:'crypto',   label:'Crypto',      icon:'₿',  color:'#F59E0B', liquid:true  },
-  { key:'realestate',label:'Real Estate',icon:'🏠', color:'#8B5CF6', liquid:false },
-  { key:'vehicle',  label:'Vehicle',     icon:'🚗', color:'#F97316', liquid:false },
-  { key:'commodity',label:'Commodity',   icon:'🥇', color:'#EAB308', liquid:true  },
-  { key:'collectibles',label:'Collectibles',icon:'🎨',color:'#F43F5E',liquid:false},
-  { key:'business', label:'Business',    icon:'🏢', color:'#6366F1', liquid:false },
-  { key:'other',    label:'Other',       icon:'📦', color:'#64748B', liquid:false },
+  { key:'stock',      label:'Stock',       icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>', color:'#10B981', liquid:true  },
+  { key:'etf',        label:'ETF',         icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#06B6D4" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>', color:'#06B6D4', liquid:true  },
+  { key:'crypto',     label:'Crypto',      icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>', color:'#F59E0B', liquid:true  },
+  { key:'realestate', label:'Real Estate', icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>', color:'#8B5CF6', liquid:false },
+  { key:'vehicle',    label:'Vehicle',     icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>', color:'#F97316', liquid:false },
+  { key:'commodity',  label:'Commodity',   icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#EAB308" stroke-width="2"><path d="M3 3h18M3 12h18M3 21h18"/><circle cx="12" cy="7" r="2"/><circle cx="6" cy="16" r="2"/><circle cx="18" cy="16" r="2"/></svg>', color:'#EAB308', liquid:true  },
+  { key:'collectibles',label:'Collectibles',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F43F5E" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>', color:'#F43F5E', liquid:false },
+  { key:'business',   label:'Business',    icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>', color:'#6366F1', liquid:false },
+  { key:'other',      label:'Other',       icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>', color:'#64748B', liquid:false },
 ];
 
 /* ═══════════════════════════════════════════════════════
@@ -164,22 +259,90 @@ function isShortTerm(a) {
 /* ═══════════════════════════════════════════════════════
    SUITE DRUM
 ═══════════════════════════════════════════════════════ */
-const DRUM_FACES  = ['💰','📉','📊','💸','📈','💧'];
+const DRUM_FACES  = ['Labor','Loss','Limit','Loan','Legacy','Liquid'];
 const DRUM_FACE_H = 44;
+/* ── Suite auth helpers ─────────────────────────── */
+const _IS_DEV_APP = ['localhost','127.0.0.1'].includes(location.hostname);
+const _LAUNCH_URL  = _IS_DEV_APP
+  ? `${location.protocol}//${location.hostname}${location.port?':'+location.port:''}/Launch/`
+  : 'https://launch.n8.wtf';
+function _getLocaAuth() { try { return JSON.parse(localStorage.getItem('locaAuth')||'null'); } catch { return null; } }
+function _hasSuiteAccess() { const a=_getLocaAuth(); return a&&(a.subscription==='suite'||a.subscription==='bundle'); }
+
 let _drumStep = 4, _drumIdx = 4, _drumSpinning = false, _launcherOpen = false;
+let _drumSpinTimer = null;
 
 function initSuiteDrum() {
   const drum = $('suiteDrum'); if (!drum) return;
   drum.style.transform = `translateY(-${_drumStep * DRUM_FACE_H}px)`;
 }
 
+function _startDrumSpin() {
+  if (_drumSpinTimer) return;
+  _drumSpinTimer = setInterval(() => {
+    const drum = document.getElementById('suiteDrum');
+    if (!drum) return;
+    _drumStep = (_drumStep + 1);
+    const FACES_TOTAL = DRUM_FACES.length + 1;
+    if (_drumStep % DRUM_FACES.length === 0) {
+      drum.style.transform = `translateY(-${_drumStep * DRUM_FACE_H}px)`;
+      setTimeout(() => {
+        drum.style.transition = 'none';
+        _drumStep = 0;
+        _drumIdx = 0;
+        drum.style.transform = 'translateY(0)';
+        requestAnimationFrame(() => requestAnimationFrame(() => { drum.style.transition = ''; }));
+      }, 620);
+    } else {
+      _drumIdx = _drumStep % DRUM_FACES.length;
+      drum.style.transform = `translateY(-${_drumStep * DRUM_FACE_H}px)`;
+    }
+  }, 700);
+}
+function _stopDrumSpin() {
+  clearInterval(_drumSpinTimer);
+  _drumSpinTimer = null;
+}
+
 function toggleSuiteLauncher() {
-  _launcherOpen = !_launcherOpen;
-  $('suiteLauncher').classList.toggle('hidden', !_launcherOpen);
+  if (_launcherOpen) { closeSuiteLauncher(); return; }
+  const panel = $('suiteLauncher');
+  const chevron = document.getElementById('suiteChevron');
+  if (!panel) return;
+  panel.classList.remove('hidden');
+  _launcherOpen = true;
+  _startDrumSpin();
+  if (chevron) chevron.style.transform = 'rotate(180deg)';
+  setTimeout(() => {
+    document.addEventListener('click', _suiteLauncherOutsideClick, { once: true });
+  }, 0);
+}
+
+function closeSuiteLauncher() {
+  const panel = $('suiteLauncher');
+  const chevron = document.getElementById('suiteChevron');
+  if (panel) panel.classList.add('hidden');
+  if (chevron) chevron.style.transform = '';
+  _launcherOpen = false;
+  _stopDrumSpin();
+  document.removeEventListener('click', _suiteLauncherOutsideClick);
+}
+
+function _suiteLauncherOutsideClick(e) {
+  const panel = $('suiteLauncher');
+  const btn = document.getElementById('suiteLaunchBtn');
+  if (panel && !panel.contains(e.target) && btn && !btn.contains(e.target)) {
+    closeSuiteLauncher();
+  }
 }
 
 function switchSuiteModule(mod) {
-  _launcherOpen = false; $('suiteLauncher').classList.add('hidden');
+  closeSuiteLauncher();
+  // Gate suite-required apps
+  if (mod === 'limit' && !_hasSuiteAccess()) {
+    window.location.href = _LAUNCH_URL;
+    return;
+  }
   const APP_URLS = { labor:'/Labor/', loss:'/Loss/', limit:'/Limit/', loan:'/Loan/', liquid:'/Liquid/' };
   if (mod === 'legacy') { switchTab('dashboard'); return; }
   if (APP_URLS[mod]) window.location.href = APP_URLS[mod];
@@ -212,7 +375,7 @@ function renderDashboard() {
   if (!assets.length) {
     app.innerHTML = `
       <div class="text-center py-16">
-        <div style="font-size:48px;margin-bottom:12px">📈</div>
+        <div style="margin-bottom:12px;display:flex;justify-content:center"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="1.5" opacity="0.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
         <div class="text-sm font-bold text-gray-300 mb-2" style="font-family:'Space Mono',monospace">No assets yet</div>
         <div class="text-xs text-gray-600 mb-6">Add your first investment or asset to see your portfolio.</div>
         <button onclick="switchTab('add')" class="px-6 py-3 rounded-xl text-sm font-bold text-white" style="background:#10B981;font-family:'Space Mono',monospace">Add First Asset</button>
@@ -268,7 +431,7 @@ function renderDashboard() {
         const pct = totalValue > 0 ? (val / totalValue * 100) : 0;
         return `<div class="mb-2">
           <div class="flex justify-between text-xxs mb-1">
-            <span class="text-gray-400">${cl.icon} ${cl.label}</span>
+            <span class="text-gray-400 flex items-center gap-1">${cl.icon} ${cl.label}</span>
             <span style="color:${cl.color}">${fmtMoney(val)} · ${pct.toFixed(0)}%</span>
           </div>
           <div style="height:6px;border-radius:3px;background:rgba(255,255,255,0.08)">
@@ -322,11 +485,11 @@ function renderAddAsset(editAsset) {
     ${!isEdit ? `<div class="flex gap-2 mb-4">
       <button onclick="setAssetMode('traditional')" id="modeTraditional"
         class="flex-1 py-2 rounded-xl text-xs font-bold" style="font-family:'Space Mono',monospace;background:${_assetMode==='traditional'?'rgba(16,185,129,0.2)':'rgba(255,255,255,0.04)'};border:1px solid ${_assetMode==='traditional'?'rgba(16,185,129,0.4)':'rgba(255,255,255,0.1)'};color:${_assetMode==='traditional'?'#10B981':'#94a3b8'}">
-        📈 Traditional
+        Traditional
       </button>
       <button onclick="setAssetMode('alternative')" id="modeAlternative"
         class="flex-1 py-2 rounded-xl text-xs font-bold" style="font-family:'Space Mono',monospace;background:${_assetMode==='alternative'?'rgba(16,185,129,0.2)':'rgba(255,255,255,0.04)'};border:1px solid ${_assetMode==='alternative'?'rgba(16,185,129,0.4)':'rgba(255,255,255,0.1)'};color:${_assetMode==='alternative'?'#10B981':'#94a3b8'}">
-        🏠 Alternative
+        Alternative
       </button>
     </div>` : ''}
 
@@ -336,7 +499,7 @@ function renderAddAsset(editAsset) {
         <button class="class-chip ${cl.key === _assetClass ? 'selected' : ''}"
           onclick="setAssetClass('${cl.key}')" id="chip_${cl.key}"
           style="${cl.key === _assetClass ? 'background:rgba(16,185,129,0.15);color:#10B981;border-color:#10B981;' : ''}">
-          <span>${cl.icon}</span><span>${cl.label}</span>
+          <span style="display:flex;align-items:center">${cl.icon}</span><span>${cl.label}</span>
         </button>`).join('')}
     </div>
 
@@ -481,7 +644,7 @@ function renderAssets() {
   const assets = (data.assets || []).filter(a => !a.deleted);
 
   if (!assets.length) {
-    app.innerHTML = `<div class="text-center py-16"><div style="font-size:48px;margin-bottom:12px">📋</div><div class="text-sm font-bold text-gray-300 mb-2" style="font-family:'Space Mono',monospace">No assets yet</div><button onclick="switchTab('add')" class="px-6 py-3 rounded-xl text-sm font-bold text-white mt-4" style="background:#10B981;font-family:'Space Mono',monospace">Add First Asset</button></div>`;
+    app.innerHTML = `<div class="text-center py-16"><div style="margin-bottom:12px;display:flex;justify-content:center"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="1.5" opacity="0.5"><path d="M4 6h16M4 12h16M4 18h16"/></svg></div><div class="text-sm font-bold text-gray-300 mb-2" style="font-family:'Space Mono',monospace">No assets yet</div><button onclick="switchTab('add')" class="px-6 py-3 rounded-xl text-sm font-bold text-white mt-4" style="background:#10B981;font-family:'Space Mono',monospace">Add First Asset</button></div>`;
     return;
   }
 
@@ -504,7 +667,7 @@ function renderAssets() {
     card.innerHTML = `
       <div class="flex items-start justify-between mb-2">
         <div class="flex items-center gap-2">
-          <span style="font-size:20px">${cl.icon}</span>
+          <span style="display:flex;align-items:center;width:24px;height:24px">${cl.icon.replace('width="16" height="16"','width="22" height="22"')}</span>
           <div>
             <div class="text-sm font-bold text-gray-200" style="font-family:'Space Mono',monospace">${asset.symbol || asset.label}</div>
             ${asset.symbol && asset.label !== asset.symbol ? `<div class="text-xxs text-gray-500">${asset.label}</div>` : ''}
@@ -661,7 +824,7 @@ function importData(event) {
 function confirmClearData() {
   const app = $('app'); if (!app) return;
   app.innerHTML = `<div class="rounded-xl p-6 text-center mt-8" style="background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.3)">
-    <div class="text-2xl mb-3">⚠️</div>
+    <div class="mb-3 flex justify-center"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F43F5E" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
     <div class="text-sm font-bold text-gray-200 mb-2" style="font-family:'Space Mono',monospace">Delete all portfolio data?</div>
     <div class="text-xs text-gray-500 mb-6">All assets and price history will be permanently removed.</div>
     <button onclick="clearAllData()" class="w-full py-3 rounded-xl text-sm font-bold text-white mb-2" style="background:#F43F5E;font-family:'Space Mono',monospace">Yes, Delete Everything</button>
@@ -703,6 +866,11 @@ function _showUpdateBanner(worker) {
    INIT
 ═══════════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
+  // Auth gate — Suite/Bundle required
+  const _gateAuth = _getLocaAuth();
+  if (!_gateAuth) { window.location.replace(_LAUNCH_URL); return; }
+  if (!_hasSuiteAccess()) { window.location.replace(_LAUNCH_URL + '?goto=pricing'); return; }
+
   initSuiteDrum();
   initSW();
   document.querySelectorAll('.tab[data-tab]').forEach(btn => {
