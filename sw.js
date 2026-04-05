@@ -1,9 +1,7 @@
-const CACHE = "localegacy-v1";
+const CACHE = "localegacy-v2";
 const ASSETS = [
   "./",
-  "./index.html",
-  "./offline-charts.js",
-  "./onboarding.js"
+  "./index.html"
 ];
 
 self.addEventListener("install", e => {

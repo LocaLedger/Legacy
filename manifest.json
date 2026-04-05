@@ -1,11 +1,12 @@
 {
   "name": "LocaLegacy",
   "short_name": "LocaLegacy",
-  "description": "Offline investment and asset portfolio tracker",
-  "start_url": "./",
+  "start_url": "/legacy/",
+  "scope": "/legacy/",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#10B981",
+  "description": "Offline investment and asset portfolio tracker",
   "icons": [
     { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
   ]
