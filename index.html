@@ -260,6 +260,106 @@ function isShortTerm(a) {
   return diff < 1;
 }
 
+/* ─── LG-F1: Price Staleness ─────────────────────── */
+function staleDays(asset) {
+  return Math.floor((Date.now() - (asset.updatedAt || asset.createdAt || Date.now())) / 86400000);
+}
+
+function stalenessBadge(asset) {
+  const days = staleDays(asset);
+  if (days < 7) return '';
+  if (days < 30) {
+    return `<span data-testid="stale-badge-${asset.id}" style="color:#F59E0B;background:rgba(245,158,11,0.1);padding:2px 6px;border-radius:4px;font-size:10px">${days}d old</span>`;
+  }
+  return `<span data-testid="stale-badge-${asset.id}" style="color:#F43F5E;background:rgba(244,63,94,0.1);padding:2px 6px;border-radius:4px;font-size:10px">⚠ ${days}d old</span>`;
+}
+
+/* ─── LG-F2: Diversification Score ───────────────── */
+function calcDiversification(assets) {
+  const totalValue = assets.reduce((s, a) => s + assetValue(a), 0);
+  if (totalValue <= 0) return null;
+
+  const byClass = {};
+  assets.forEach(a => { byClass[a.class] = (byClass[a.class] || 0) + assetValue(a); });
+
+  let hhi = 0;
+  let dominant = null, dominantPct = 0;
+  Object.entries(byClass).forEach(([key, val]) => {
+    const pct = (val / totalValue) * 100;
+    hhi += Math.pow(pct / 100, 2);
+    if (pct > dominantPct) { dominantPct = pct; dominant = key; }
+  });
+
+  let grade, gradeColor;
+  if      (hhi < 0.30) { grade = 'A'; gradeColor = '#10B981'; }
+  else if (hhi < 0.45) { grade = 'B'; gradeColor = '#06B6D4'; }
+  else if (hhi < 0.60) { grade = 'C'; gradeColor = '#F59E0B'; }
+  else if (hhi < 0.75) { grade = 'D'; gradeColor = '#F97316'; }
+  else                  { grade = 'F'; gradeColor = '#F43F5E'; }
+
+  return { hhi, grade, gradeColor, dominant, dominantPct };
+}
+
+function renderDivScoreCard(assets) {
+  const d = calcDiversification(assets);
+  if (!d) return '';
+  const domLabel = classInfo(d.dominant).label;
+  return `
+    <div data-testid="div-score-card" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);padding:14px;border-radius:14px;margin-bottom:16px;display:flex;align-items:center;gap:14px">
+      <div data-testid="div-grade" style="font-size:40px;font-weight:700;color:${d.gradeColor};font-family:'Space Mono',monospace;line-height:1;flex-shrink:0">${d.grade}</div>
+      <div style="flex:1;min-width:0">
+        <div class="text-xs font-bold text-gray-300" style="font-family:'Space Mono',monospace">Diversification</div>
+        <div class="text-xxs text-gray-500" style="font-family:'Space Mono',monospace">HHI: ${d.hhi.toFixed(2)}</div>
+        ${d.dominantPct > 60 ? `<div class="text-xxs" style="color:#F59E0B;margin-top:4px;font-family:'Space Mono',monospace">⚠ ${domLabel} is ${d.dominantPct.toFixed(0)}% of portfolio</div>` : ''}
+      </div>
+    </div>`;
+}
+
+/* ─── LG-F3: Tax Lot Summary ──────────────────────── */
+function calcTaxLots(assets) {
+  let shortTermGL = 0, longTermGL = 0;
+  assets.forEach(a => {
+    const gl = gainLoss(a);
+    if (isShortTerm(a)) shortTermGL += gl;
+    else longTermGL += gl;
+  });
+
+  const converting = assets
+    .filter(a => isShortTerm(a) && gainLoss(a) > 0)
+    .map(a => {
+      const daysUntilLT = Math.max(0, 365 - Math.floor((Date.now() - new Date(a.openedDate + 'T00:00:00').getTime()) / 86400000));
+      return { asset: a, daysUntilLT };
+    })
+    .sort((a, b) => a.daysUntilLT - b.daysUntilLT)
+    .slice(0, 3);
+
+  return { shortTermGL, longTermGL, converting };
+}
+
+function renderTaxLotCard(assets) {
+  if (!assets.length) return '';
+  const { shortTermGL, longTermGL, converting } = calcTaxLots(assets);
+  const stColor = shortTermGL >= 0 ? '#10B981' : '#F43F5E';
+  const ltColor = longTermGL  >= 0 ? '#10B981' : '#F43F5E';
+  return `
+    <div data-testid="taxlot-card" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);padding:14px;border-radius:14px;margin-bottom:16px">
+      <div class="text-xs font-bold text-gray-300 mb-3" style="font-family:'Space Mono',monospace">Tax Lots</div>
+      <div class="grid grid-cols-2 gap-3 mb-3">
+        <div>
+          <div class="text-xxs text-gray-500 mb-1" style="font-family:'Space Mono',monospace">Short-Term</div>
+          <div data-testid="taxlot-st" class="text-sm font-bold" style="color:${stColor};font-family:'Space Mono',monospace">${shortTermGL >= 0 ? '+' : ''}${fmtMoney(Math.abs(shortTermGL))}</div>
+        </div>
+        <div>
+          <div class="text-xxs text-gray-500 mb-1" style="font-family:'Space Mono',monospace">Long-Term</div>
+          <div data-testid="taxlot-lt" class="text-sm font-bold" style="color:${ltColor};font-family:'Space Mono',monospace">${longTermGL >= 0 ? '+' : ''}${fmtMoney(Math.abs(longTermGL))}</div>
+        </div>
+      </div>
+      ${converting.length ? `<div class="flex flex-col gap-1">${converting.map(({ asset: a, daysUntilLT }) =>
+        `<div class="text-xxs text-gray-500" style="font-family:'Space Mono',monospace">${a.symbol || a.label} → LT in ${daysUntilLT} days</div>`
+      ).join('')}</div>` : ''}
+    </div>`;
+}
+
 /* ═══════════════════════════════════════════════════════
    SUITE DRUM
 ═══════════════════════════════════════════════════════ */
@@ -459,6 +559,12 @@ function renderDashboard() {
         <div class="text-xs" style="color:#F43F5E;font-family:'Space Mono',monospace">${fmtPct(gainPct(worst),true)}</div>
       </div>
     </div>` : ''}
+
+    <!-- LG-F2: Diversification Score Card -->
+    ${renderDivScoreCard(assets)}
+
+    <!-- LG-F3: Tax Lot Summary -->
+    ${renderTaxLotCard(assets)}
   `;
 }
 
@@ -687,6 +793,7 @@ function renderAssets() {
         <span style="color:${cl.color};background:rgba(${cl.color==='#10B981'?'16,185,129':'6,182,212'},0.1);padding:2px 6px;border-radius:4px">${cl.label}</span>
         ${st ? '<span style="color:#F59E0B;background:rgba(245,158,11,0.1);padding:2px 6px;border-radius:4px">SHORT-TERM</span>' : ''}
         ${cl.liquid ? '' : '<span style="color:#94a3b8;background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px">ILLIQUID</span>'}
+        ${stalenessBadge(asset)}
       </div>
       <div class="flex gap-2 mt-3">
         <button onclick="openPriceUpdate('${asset.id}')" class="flex-1 py-1.5 rounded-lg text-xxs font-bold" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);color:#10B981;font-family:'Space Mono',monospace">Update Price</button>
